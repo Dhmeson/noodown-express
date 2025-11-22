@@ -89,7 +89,7 @@ function saveLog(logData: LogData) {
   }).catch(() => {});
 }
 
-export function observabilityRoutes(
+function observabilityRoutes(
   req: Request,
   res: Response,
   next: NextFunction

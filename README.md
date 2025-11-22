@@ -45,7 +45,7 @@ set SERVER_KEY=sua_chave_aqui
 
 ```javascript
 import express from 'express';
-import { observabilityRoutes } from 'noodown-express';
+import observabilityRoutes from 'noodown-express';
 
 const app = express();
 
@@ -60,16 +60,6 @@ app.get('/', (req, res) => {
 app.listen(3000, () => {
   console.log('Servidor rodando na porta 3000');
 });
-```
-
-### Importação alternativa
-
-Você também pode importar como default:
-
-```javascript
-import observabilityRoutes from 'noodown-express';
-
-app.use(observabilityRoutes);
 ```
 
 ## Dados Coletados
