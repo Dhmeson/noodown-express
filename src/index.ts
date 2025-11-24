@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import { Request, Response, NextFunction } from 'express';
 
 interface LogData {
   method: string;
@@ -23,7 +22,7 @@ class LogBuilder {
     this.startTime = process.hrtime.bigint();
   }
 
-  build(req: Request, res: Response): LogData {
+  build(req: any, res: any): LogData {
     const end = process.hrtime.bigint();
     const durationMs = Number(end - this.startTime) / 1_000_000;
 
@@ -42,7 +41,7 @@ class LogBuilder {
     };
   }
 
-  private extractClientIp(req: Request): string | undefined {
+  private extractClientIp(req: any): string | undefined {
     const forwardedFor = this.extractHeader(req, "x-forwarded-for");
     if (forwardedFor) {
       return forwardedFor.split(",")[0].trim();
@@ -64,7 +63,7 @@ class LogBuilder {
   }
 
   private extractHeader(
-    req: Request,
+    req: any,
     headerName: string
   ): string | undefined {
     const headers = req.headers || {};
@@ -77,7 +76,7 @@ class LogBuilder {
 function saveLog(logData: LogData) {
   const SERVER_KEY = process.env.SERVER_KEY || '';
  
-  const url = `https://noodown.com/api/v1/logs/${SERVER_KEY}`;
+  const url = `https://api.noodown.com/v1/logs/${SERVER_KEY}`;
   
   fetch(url, {
     method: "POST",
@@ -90,9 +89,9 @@ function saveLog(logData: LogData) {
 }
 
 function observabilityRoutes(
-  req: Request,
-  res: Response,
-  next: NextFunction
+  req: any,
+  res: any,
+  next: any
 ) {
   const logBuilder = new LogBuilder();
   

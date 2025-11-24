@@ -1,47 +1,40 @@
 # noodown-express
 
-Middleware de observabilidade para Express.js que envia logs de requisições HTTP para o serviço Noodown.
+Observability middleware for Express.js that sends HTTP request logs to the Noodown service.
 
-## Instalação
+## Installation
 
 ```bash
 npm install noodown-express
 ```
 
-## Requisitos
+## Requirements
 
 - Node.js >= 18.0.0
 - Express.js >= 4.18.0
 
-## Configuração
+## Configuration
 
-Antes de usar o middleware, você precisa configurar a variável de ambiente `SERVER_KEY` com sua chave de servidor do Noodown.
+Before using the middleware, you need to configure the `SERVER_KEY` environment variable with your Noodown server key.
 
-### Usando dotenv
+### Using dotenv
 
-Crie um arquivo `.env` na raiz do seu projeto:
+Create a `.env` file in the root of your project:
 
 ```env
-SERVER_KEY=sua_chave_aqui
+SERVER_KEY=your_key_here
 ```
 
-O middleware carrega automaticamente as variáveis de ambiente usando `dotenv`.
+The middleware automatically loads environment variables using `dotenv`.
 
-### Configuração manual
 
-Você também pode definir a variável de ambiente diretamente:
+## Usage
 
-```bash
-export SERVER_KEY=sua_chave_aqui
-```
+The package supports both CommonJS and ES Modules. Use the appropriate import syntax for your project.
 
-Ou no Windows:
+### ES Modules (ESM)
 
-```cmd
-set SERVER_KEY=sua_chave_aqui
-```
-
-## Uso
+If your project uses ES Modules (has `"type": "module"` in `package.json` or uses `.mjs` files):
 
 ```javascript
 import express from 'express';
@@ -49,44 +42,72 @@ import observabilityRoutes from 'noodown-express';
 
 const app = express();
 
-// Use o middleware de observabilidade
+// Use the observability middleware
 app.use(observabilityRoutes);
 
-// Suas rotas aqui
+// Your routes here
 app.get('/', (req, res) => {
   res.json({ hello: 'world' });
 });
 
 app.listen(3000, () => {
-  console.log('Servidor rodando na porta 3000');
+  console.log('Server running on port 3000');
 });
 ```
 
-## Dados Coletados
+### CommonJS
 
-O middleware coleta automaticamente os seguintes dados de cada requisição:
+If your project uses CommonJS (default Node.js modules):
 
-- **method**: Método HTTP (GET, POST, etc.)
-- **path**: Caminho da requisição
-- **status**: Código de status HTTP da resposta
-- **duration_ms**: Duração da requisição em milissegundos
-- **timestamp**: Data e hora da requisição (ISO 8601)
-- **client_ip**: IP do cliente (extraído de headers como `x-forwarded-for`, `x-real-ip`, etc.)
-- **user_agent**: User agent do cliente
-- **origin**: Header Origin
-- **referer**: Header Referer
-- **host**: Header Host
-- **content_type**: Content-Type da requisição
+```javascript
+const express = require('express');
+const observabilityRoutes = require('noodown-express');
 
-## Como Funciona
+const app = express();
 
-1. O middleware é executado antes de cada requisição
-2. Registra o tempo de início usando `process.hrtime.bigint()`
-3. Quando a resposta é finalizada (evento `close`), constrói o log com todos os dados
-4. Envia o log de forma assíncrona para a API do Noodown usando `fetch` com `keepalive: true`
-5. Não bloqueia a resposta da requisição (erros são silenciosamente ignorados)
+// Use the observability middleware
+app.use(observabilityRoutes);
 
-## Licença
+// Your routes here
+app.get('/', (req, res) => {
+  res.json({ hello: 'world' });
+});
+
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
+});
+```
+
+The package automatically detects which module system you're using and provides the correct build.
+
+## Collected Data
+
+The middleware automatically collects the following data from each request:
+
+- **method**: HTTP method (GET, POST, etc.)
+- **path**: Request path
+- **status**: HTTP response status code
+- **duration_ms**: Request duration in milliseconds
+- **timestamp**: Request date and time (ISO 8601)
+- **client_ip**: Client IP (extracted from headers like `x-forwarded-for`, `x-real-ip`, etc.)
+- **user_agent**: Client user agent
+- **origin**: Origin header
+- **referer**: Referer header
+- **host**: Host header
+- **content_type**: Request Content-Type
+
+## How It Works
+
+1. The middleware runs before each request
+2. Records the start time using `process.hrtime.bigint()`
+3. When the response is finished (`close` event), builds the log with all the data
+4. Sends the log asynchronously to the Noodown API using `fetch` with `keepalive: true`
+5. Does not block the request response (errors are silently ignored)
+
+# Dashboard
+https://www.noodown.com
+
+## License
 
 MIT
 

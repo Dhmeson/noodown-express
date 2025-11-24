@@ -8,4 +8,4 @@ types/
 *.tsbuildinfo
 .vscode/
 .idea/
-
+PUBLISH.md
